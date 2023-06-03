@@ -62,3 +62,16 @@ FONT_DIR = 'images/fonts/'
 GENERATED_IMAGE_DIR = 'images/temporary/'
 
 dictConfig(LOGGING_CONFIG)
+
+SUMMONERS = {
+    '3': "SummonerExhaust",
+    '4': "SummonerFlash",
+    '6': "SummonerHaste",
+    '7': "SummonerMana",
+    '11': "SummonerSmite",
+    '12': "SummonerTeleport",
+    '13': "SummonerMana",
+    '14': "SummonerDot",
+    '21': "SummonerBarrier",
+    '32': "SummonerSnowball"
+}
