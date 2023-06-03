@@ -88,19 +88,41 @@ def run():
         if ('status' in player.keys()):
             await ctx.send("Пользователь с данным именем призывателя не найден")
             return
-        print(player['puuid'])
+        # print(player['puuid'])
 
-        # Передача ботом
+        # Получение сведений о ранговой очереди
+        api_url = f"https://ru.api.riotgames.com/lol/league/v4/entries/by-summoner/{player['id']}" + '?api_key=' + settings.LOL_API_SECRET
+        resp = requests.get(api_url)
+        ranked = resp.json()
         embed = discord.Embed(title="Информация о призывателе",
-                              description=f"{player['name']} {player['summonerLevel']} уровень\nПлатина 1\nПоследний раз в сети: {time.strftime('%d %b %Y %H:%M:%S', time.localtime(player['revisionDate'] / 1000))}")
+                              description=f"{player['name']} {player['summonerLevel']} уровень\n")
+        for i in range(len(ranked)):
+            if ranked[i]['queueType'] == 'RANKED_SOLO_5x5':
+                rank = ranked[i]['tier'] + ' ' + ranked[i]['rank']
+                lp = ranked[i]['leaguePoints']
+                wins = ranked[i]['wins']
+                lose = ranked[i]['losses']
+                embed.add_field(name="SOLOQUEUE",
+                                value=f"{rank} {lp} lp\nПобед: {wins}\tПоражений: {lose}\tВинрейт: {'{:.2f}'.format(wins / (wins + lose) * 100)}%\n")
+            if ranked[i]['queueType'] == 'RANKED_FLEX_SR':
+                rank = ranked[i]['tier'] + ' ' + ranked[i]['rank']
+                lp = ranked[i]['leaguePoints']
+                wins = ranked[i]['wins']
+                lose = ranked[i]['losses']
+                embed.add_field(name="FLEX",
+                                value=f"{rank} {lp} lp\nПобед: {wins}\tПоражений: {lose}\tВинрейт: {'{:.2f}'.format(wins / (wins + lose) * 100)}%\n")
+        embed.add_field(
+            name=f"Последний раз в сети: {time.strftime('%d %b %Y %H:%M:%S', time.localtime(player['revisionDate'] / 1000))}", value="")
+
+        print(ranked)
         embed.set_thumbnail(
             url=f"https://ddragon-webp.lolmath.net/latest/img/profileicon/{player['profileIconId']}.webp")
         await ctx.send(embed=embed)
 
     @bot.command(
-        aliases=['gi']
+        aliases=['last']
     )
-    async def games_info(ctx, *kwargs):
+    async def last_game(ctx, *kwargs):
         # Генерация имени
         name = kwargs[0]
         for i in range(1, len(kwargs)):
@@ -120,7 +142,7 @@ def run():
         games_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{player['puuid']}/ids?start=0&count=20" + '&api_key=' + settings.LOL_API_SECRET
         games_list = requests.get(games_url).json()
         result = []
-        for k in range(len(games_list)):
+        for k in range(1):
             current_game_url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{games_list[k]}" + '?api_key=' + settings.LOL_API_SECRET
             current_game_list = requests.get(current_game_url).json()
             meta_info = {}
@@ -197,12 +219,7 @@ def run():
             result[k].save(settings.GENERATED_IMAGE_DIR + f"{player['name']}_{games_list[0]}" + ".png")
             path = settings.GENERATED_IMAGE_DIR + f"{player['name']}_{games_list[0]}" + ".png"
             file = discord.File(path, filename=f"{player['name']}_{games_list[0]}" + ".png")
-            if meta_info['win'] == True:
-                embed = discord.Embed(title="Победа")
-            else:
-                embed = discord.Embed(title="Поражение")
-            embed.set_image(url=f"attachment://{path}")
-            await ctx.send(embed=embed, file=file)
+            await ctx.send(file=file)
 
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
 
