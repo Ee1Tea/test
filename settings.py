@@ -1,8 +1,7 @@
 import os
-import logging
 import pathlib
-from logging.config import dictConfig
 from dotenv import load_dotenv
+from logging.config import dictConfig
 
 load_dotenv()
 
@@ -12,7 +11,7 @@ DISCORD_API_SECRET = os.getenv("DISCORD_API_TOKEN")
 
 LOGGING_CONFIG = {
     "version": 1,
-    "disabled_existing_Loggers": False,
+    "disabled_existing_loggers": False,
     "formatters": {
         "verbose": {
             "format": "%(levelname)-10s - %(asctime)s - %(module)-15s : %(message)s"
@@ -40,14 +39,14 @@ LOGGING_CONFIG = {
             'formatter': "verbose"
         }
     },
-    "Loggers": {
+    "loggers": {
         "bot": {
-            'handlers': ['console'],
+            'handlers': ["console"],
             "level": "INFO",
             "propagate": False
         },
         "discord": {
-            'handlers': ['console2', "file"],
+            'handlers': ["console2", "file"],
             "level": "INFO",
             "propagate": False
         }
@@ -61,3 +60,5 @@ GENERAL_IMAGE_DIR = 'images/general/'
 FONT_DIR = 'images/fonts/'
 
 GENERATED_IMAGE_DIR = 'images/temporary/'
+
+dictConfig(LOGGING_CONFIG)

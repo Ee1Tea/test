@@ -5,8 +5,10 @@ import time
 from io import BytesIO
 from PIL import Image, ImageFont, ImageDraw
 from discord.ext import commands
+from logging import getLogger
 
-logger = settings.logging.getLogger("bot")
+logger = getLogger("bot")
+logger.debug("Started")
 
 
 def run():
