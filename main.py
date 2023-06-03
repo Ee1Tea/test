@@ -150,7 +150,7 @@ def run():
             # Изображения предметов
             items = [Image.open(BytesIO(requests.get(
                 f"https://ddragon-webp.lolmath.net/latest/img/item/{meta_info['items'][i]}.webp").content)).convert(
-                "RGBA").resize((64,64))
+                "RGBA").resize((64, 64))
                      for i in range(7) if meta_info['items'][i] != 0]
             # Изображения чемпионов
             if meta_info['championName'] != "FiddleSticks":
@@ -192,7 +192,7 @@ def run():
             back.paste(sums1, (145, 6))
             back.paste(sums2, (145, 80))
             back = Image.alpha_composite(back, txt)
-
+            # Вывод результата
             result.append(back)
             result[k].save(settings.GENERATED_IMAGE_DIR + f"{player['name']}_{games_list[0]}" + ".png")
             path = settings.GENERATED_IMAGE_DIR + f"{player['name']}_{games_list[0]}" + ".png"
