@@ -66,8 +66,8 @@ dictConfig(LOGGING_CONFIG)
 SUMMONERS = {
     '3': "SummonerExhaust",
     '4': "SummonerFlash",
-    '6': "SummonerHeal",
-    '7': "SummonerMana",
+    '6': "SummonerMana",
+    '7': "SummonerHeal",
     '11': "SummonerSmite",
     '12': "SummonerTeleport",
     '13': "SummonerMana",
