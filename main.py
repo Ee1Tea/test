@@ -56,6 +56,9 @@ def run():
         api_url = f"https://ru.api.riotgames.com/lol/summoner/v4/summoners/by-name/{name}" + '?api_key=' + settings.LOL_API_SECRET
         resp = requests.get(api_url)
         player = resp.json()
+        if ('status' in player.keys()):
+            await ctx.send("Пользователь с данным именем призывателя не найден")
+            return
 
         # Генерация изображения
         res = Image.open(settings.GENERAL_IMAGE_DIR + 'background.jpeg').convert("RGBA")
@@ -100,14 +103,17 @@ def run():
         api_url = f"https://ru.api.riotgames.com/lol/summoner/v4/summoners/by-name/{name}" + '?api_key=' + settings.LOL_API_SECRET
         resp = requests.get(api_url)
         player = resp.json()
-        print(player)
+        #print(player)
+        if('status' in player.keys()):
+            await ctx.send("Пользователь с данным именем призывателя не найден")
+            return
+        #print('id' in player.keys())
 
         # Передача ботом
         embed = discord.Embed(title="Информация о призывателе",
                               description=f"{player['name']} {player['summonerLevel']} уровень\nПлатина 1\nПоследний раз в сети: {time.strftime('%d %b %Y %H:%M:%S', time.localtime(player['revisionDate'] / 1000))}")
         embed.set_thumbnail(
             url=f"https://ddragon-webp.lolmath.net/latest/img/profileicon/{player['profileIconId']}.webp")
-        print(time.strftime("%d %b %Y %H:%M:%S", time.localtime(player['revisionDate'] / 1000)))
         await ctx.send(embed=embed)
 
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
